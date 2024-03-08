@@ -10,10 +10,10 @@ Quick Installation Script Manager (QISL). Uses the PIGET scripts library.
 
 # Installation
 
-API installation methods:
-- [API Curl Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand.pinfo) (Requires curl)
-- [API Bitsadmin Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-bitsadmin.pinfo) (Requires bitsadmin)
-- [API Powershell Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-powershell.pinfo) (Requires powershell)
+PIGET installation methods:
+- [PIGET Curl Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand.pinfo) (Requires curl)
+- [PIGET Bitsadmin Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-bitsadmin.pinfo) (Requires bitsadmin)
+- [PIGET Powershell Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-powershell.pinfo) (Requires powershell)
 
 <!> Supported platforms: ```win-x86```, ```win-x64```
 
