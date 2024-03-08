@@ -17,10 +17,18 @@ namespace piget
 {
     internal class Program
     {
-        public const string Version = "1.0";
         public const string Logo = "\r\n ______     _____ _____ _____ ______ _______ \r\n \\ \\ \\ \\   |  __ \\_   _/ ____|  ____|__   __|\r\n  \\ \\ \\ \\  | |__) || || |  __| |__     | |   \r\n   > > > > |  ___/ | || | |_ |  __|    | |   \r\n  / / / /  | |    _| || |__| | |____   | |   \r\n /_/_/_/   |_|   |_____\\_____|______|  |_|  \r\n";
+
+        public const string Version = "1.0";
+
         public const string PigetLibraryStd = "https://raw.githubusercontent.com/mnd0929/piget-library/main/library.json";
+
+        public const string PigetLatestVersionCodeUrl = "https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-last.pinfo";
+
+        public const string PigelLatestVersionExecutable = "https://github.com/mnd0929/piget/releases/latest/download/piget.exe";
+
         public static LocalLibrariesManager localLibrariesManager = new LocalLibrariesManager();
+
         static void Main(string[] args)
         {
             if (args.Count() == 0)
@@ -71,10 +79,10 @@ namespace piget
 
                         case "list":
                             {
-                                List<PigetScript> pigetScripts = localLibrariesManager.GetLibraryByName(args[2]).GetScripts();
-                                for (int i = 0; i < pigetScripts.Count; i++)
+                                List<PigetScript> Scripts = localLibrariesManager.GetLibraryByName(args[2]).GetScripts();
+                                for (int i = 0; i < Scripts.Count; i++)
                                 {
-                                    PigetScript pigetScript = pigetScripts[i];
+                                    PigetScript pigetScript = Scripts[i];
 
                                     Console.WriteLine($"{i + 1}: {pigetScript.Name}");
                                 }
@@ -148,6 +156,22 @@ namespace piget
                     
                     break;
 
+                case "search":
+                    List<PigetScript> pigetScripts = localLibrariesManager.SearchScripts(args[1]);
+                    if (pigetScripts != null)
+                    {
+                        ActionAnswer.Log("<?> ", $"Результатов: {pigetScripts.Count}");
+                        pigetScripts.ForEach(scr => 
+                        {
+                            ActionAnswer.Log($"<{scr.ScriptLibrary.Name}> ", $"{scr.Name}");
+                        });
+                    }
+                    else
+                    {
+                        ActionAnswer.Log("<?> ", "Пакеты не найдены");
+                    }
+                    break;
+
                 case "run":
                     PigetScript sc = localLibrariesManager.GetScriptByName(args[1]);
                     if (sc != null)
@@ -193,11 +217,12 @@ namespace piget
 
             "piget \r\n" +
             "    run <ScriptName>\r\n" +
+            "    search \"<Keywords>\"\r\n" +
             "    library [connect <ManifestLink> | disconnect <LibraryName> | list <LibraryName> | update <LibraryName>]\r\n" +
             "    libraries [disconnect | list | update]\r\n" +
             "    check [resources | ...]\r\n" +
-            "    update\r\n" +
             "    info <ScriptName>\r\n" +
+            "    update\r\n" +
             "    ver\r\n" +
             "    help";
     }

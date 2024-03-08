@@ -101,7 +101,6 @@ namespace piget.Api
 
             return scripts;
         }
-
         public PigetScript GetScriptByName(string name)
         {
             foreach (PigetScriptLibrary lib in GetLibraries())
@@ -114,6 +113,18 @@ namespace piget.Api
 
             return null;
         }
+
+        /// <summary>
+        /// Ищет скрипты по указанным ключевым словам
+        /// </summary>
+        public List<PigetScript> SearchScripts(string keywords) =>
+            GetScripts().FindAll(x => keywords.Contains(x.Name) || x.Name.Contains(keywords) || x.Description.Contains(keywords));
+
+        /// <summary>
+        /// Проверяет на доступность ресурсы скриптов
+        /// </summary>
+        /// <param name="removeBadScripts">Нужно ли удалять скрипты с недоступными ресурсами</param>
+        /// <returns></returns>
         public List<PigetScript> CheckAllResources(bool removeBadScripts = true)
         {
             List<PigetScript> badScripts = new List<PigetScript>();
