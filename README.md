@@ -89,3 +89,5 @@ The standard PIGET source is [here](https://raw.githubusercontent.com/mnd0929/pi
 ```piget libraries update``` - Updates ALL libraries
 
 ```piget check resources``` - Checks the availability of resources for ALL scripts and removes all unavailable ones
+
+```piget info <ScriptName>``` - Displays information about the specified script
