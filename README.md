@@ -72,7 +72,7 @@ The standard PIGET source is [here](https://raw.githubusercontent.com/mnd0929/pi
 
 ```piget run <ScriptName>``` - Runs the first package found with the given name
 
-```piget search "<Keywords>"``` - Displays a list of scripts matching the keywords. The search is carried out in the name and description
+```piget search "<Keywords>"``` - Displays a list of scripts matching the keywords
 
 ```piget library connect <ManifestLink>``` - Connects the library using its Web Manifest
 
