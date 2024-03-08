@@ -1,4 +1,5 @@
-﻿using System;
+﻿using piget.Api;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -27,14 +28,14 @@ namespace piget
         {
             string updateCommand = new HttpClient().GetStringAsync(PigetLatestVersionUpdateCode).Result;
 
+            Helpers.CreateFileWithText("updater.bat", updateCommand);
+
             Process process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c {updateCommand}",
-                    CreateNoWindow = false,
-                    UseShellExecute = false
+                    FileName = "updater.bat",
+                    Arguments = $"/c {updateCommand}"
                 }
             };
 

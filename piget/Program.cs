@@ -19,7 +19,7 @@ namespace piget
     {
         public const string Logo = "\r\n ______     _____ _____ _____ ______ _______ \r\n \\ \\ \\ \\   |  __ \\_   _/ ____|  ____|__   __|\r\n  \\ \\ \\ \\  | |__) || || |  __| |__     | |   \r\n   > > > > |  ___/ | || | |_ |  __|    | |   \r\n  / / / /  | |    _| || |__| | |____   | |   \r\n /_/_/_/   |_|   |_____\\_____|______|  |_|  \r\n";
 
-        public const string Version = "1.0";
+        public const string Version = "1.1";
 
         public static LocalLibrariesManager localLibrariesManager = new LocalLibrariesManager();
 
@@ -152,13 +152,13 @@ namespace piget
                         KeyValuePair<bool, string> res = Updater.CheckUpdates();
                         if (res.Key)
                         {
-                            ActionAnswer.Log("<?> ", $"Найдена новая версия: {res.Value}");
-                            ActionAnswer.Log("<!> ", $"Запуск Updater с сохранением текущих параметров");
-                            Updater.Update();
+                            ActionAnswer.Log("<!> ", "Установлена последняя версия");
                         }
                         else
                         {
-                            ActionAnswer.Log("<!> ", "Установлена последняя версия");
+                            ActionAnswer.Log("<?> ", $"Найдена новая версия: {res.Value}");
+                            ActionAnswer.Log("<!> ", $"Запуск Updater с сохранением текущих параметров");
+                            Updater.Update();
                         }
                     }
                     ActionAnswer.Log("<!> ", "Операция завершена");
