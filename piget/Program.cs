@@ -21,12 +21,6 @@ namespace piget
 
         public const string Version = "1.0";
 
-        public const string PigetLibraryStd = "https://raw.githubusercontent.com/mnd0929/piget-library/main/library.json";
-
-        public const string PigetLatestVersionCodeUrl = "https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-last.pinfo";
-
-        public const string PigelLatestVersionExecutable = "https://github.com/mnd0929/piget/releases/latest/download/piget.exe";
-
         public static LocalLibrariesManager localLibrariesManager = new LocalLibrariesManager();
 
         static void Main(string[] args)
@@ -153,7 +147,21 @@ namespace piget
                     break;
 
                 case "update":
-                    
+                    ActionAnswer.Log("<!> ", "Поиск обновлений");
+                    {
+                        KeyValuePair<bool, string> res = Updater.CheckUpdates();
+                        if (res.Key)
+                        {
+                            ActionAnswer.Log("<?> ", $"Найдена новая версия: {res.Value}");
+                            ActionAnswer.Log("<!> ", $"Запуск Updater с сохранением текущих параметров");
+                            Updater.Update();
+                        }
+                        else
+                        {
+                            ActionAnswer.Log("<!> ", "Установлена последняя версия");
+                        }
+                    }
+                    ActionAnswer.Log("<!> ", "Операция завершена");
                     break;
 
                 case "search":
@@ -183,6 +191,10 @@ namespace piget
                     {
                         ActionAnswer.Log("<?> ", "Пакеты не найдены");
                     }
+                    break;
+
+                case "install":
+                    Installer.Run(localLibrariesManager.PigetDirectory, localLibrariesManager);
                     break;
 
                 case "info":
