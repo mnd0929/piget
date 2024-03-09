@@ -110,5 +110,31 @@ namespace piget.Api
             int description;
             return InternetGetConnectedState(out description, 0);
         }
+
+        public static string ConvertStringArrayToString(string[] array)
+        {
+            string result = null;
+
+            array.ToList().ForEach(x => result += $"{x} ");
+
+            return result;
+        }
+        public static string[] TrimArrayStart(string[] array)
+        {
+            List<string> res = array.ToList();
+            res.Remove(array.FirstOrDefault());
+
+            return ListToArray(res);
+        }
+        public static string[] ListToArray(List<string> list)
+        {
+            string[] result = new string[list.Count];
+            for (int i = 0; i < list.Count; i++)
+            {
+                result[i] = list[i];
+            }
+
+            return result;
+        }
     }
 }

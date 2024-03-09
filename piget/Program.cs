@@ -19,12 +19,16 @@ namespace piget
     {
         public const string Logo = "\r\n ______     _____ _____ _____ ______ _______ \r\n \\ \\ \\ \\   |  __ \\_   _/ ____|  ____|__   __|\r\n  \\ \\ \\ \\  | |__) || || |  __| |__     | |   \r\n   > > > > |  ___/ | || | |_ |  __|    | |   \r\n  / / / /  | |    _| || |__| | |____   | |   \r\n /_/_/_/   |_|   |_____\\_____|______|  |_|  \r\n";
 
-        public const string Version = "1.1";
+        public const string Version = "1.2";
 
         public static LocalLibrariesManager localLibrariesManager = new LocalLibrariesManager();
 
+        public static string[] publicArgs = { };
+
         static void Main(string[] args)
         {
+            publicArgs = args;
+
             if (args.Count() == 0)
             {
                 if (!File.Exists(Path.Combine(localLibrariesManager.PigetDirectory, "piget.exe")))
@@ -185,7 +189,7 @@ namespace piget
                     if (sc != null)
                     {
                         ActionAnswer.Log("<?> ", $"Библиотека пакета: {sc.ScriptLibrary.Name}, Хэш: {HashManager.GetScriptHash(sc)}");
-                        sc.Run();
+                        sc.Run(Helpers.TrimArrayStart(Helpers.TrimArrayStart(args)));
                     }
                     else
                     {

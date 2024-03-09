@@ -39,8 +39,10 @@ namespace piget.Api
         /// <summary>
         /// Запустить скрипт в ScriptDirectory
         /// </summary>
-        public void Run()
+        public void Run(string[] args)
         {
+            ActionAnswer.Log("<LOG> ", Helpers.ConvertStringArrayToString(args));
+
             string scriptHash = HashManager.GetScriptHash(this);
             string scriptRootDirectory = Path.Combine(ScriptLibrary.LibraryDirectory, scriptHash);
             string scriptEnvironement = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptEnvironementName);
@@ -49,6 +51,7 @@ namespace piget.Api
             DownloadResources(scriptEnvironement, scriptRootDirectory);
 
             Process process = new Process();
+            process.StartInfo.Arguments = $" {Helpers.ConvertStringArrayToString(args)}";
             process.StartInfo.FileName = scriptBatchPath;
             process.StartInfo.WorkingDirectory = scriptEnvironement;
             process.StartInfo.UseShellExecute = false;
