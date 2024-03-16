@@ -12,7 +12,7 @@ namespace piget
 {
     public class Updater
     {
-        public const string PigetLibraryStd = "https://raw.githubusercontent.com/mnd0929/piget-library/main/library.json";
+        public const string PigetLibraryStd = "https://raw.githubusercontent.com/mnd0929/piget-library/main/library.pgtlb";
         public const string PigetLatestVersionCodeUrl = "https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-last.pinfo";
         public const string PigetLatestVersionUpdateCode = "https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand.pinfo";
         public const string PigelLatestVersionExecutable = "https://github.com/mnd0929/piget/releases/latest/download/piget.exe";
@@ -35,7 +35,7 @@ namespace piget
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "updater.bat",
-                    Arguments = $"/c {updateCommand}"
+                    Verb = "runas"
                 }
             };
 
