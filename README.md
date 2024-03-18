@@ -31,11 +31,12 @@ The PIGET library should be a public json file with the following architecture:
     "<link to text file with Source 2>"
   ],
   "Name": "<Library Name>"
+  "Description": "<Library Description>"
 }
 ```
 You can connect the library to the PIGET client using the command ```piget library connect <LibraryLink>```.
 
-The PIGET standard library is [here](https://raw.githubusercontent.com/mnd0929/piget-library/main/library.json)
+The PIGET standard library is [here](https://raw.githubusercontent.com/mnd0929/piget-library/main/library.pgtlb)
 
 # Sources
 
@@ -66,7 +67,7 @@ The resource should be a public json file with the following content:
 ```
 Sources are indicated in the library manifest. 
 
-The standard PIGET source is [here](https://raw.githubusercontent.com/mnd0929/piget-library/main/source.json)
+The standard PIGET source is [here](https://raw.githubusercontent.com/mnd0929/piget-library/main/source.pgtsc)
 
 # Commands
 
