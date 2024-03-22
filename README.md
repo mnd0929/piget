@@ -10,10 +10,27 @@ Quick Installation Script Manager (QISL). Uses the PIGET scripts library.
 
 # Installation
 
-PIGET installation methods:
-- [PIGET Curl Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand.pinfo) (Requires curl)
-- [PIGET Bitsadmin Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-bitsadmin.pinfo) (Requires bitsadmin)
-- [PIGET Powershell Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-powershell.pinfo) (Requires powershell)
+- **Installation methods via downloading the executable file:**
+  - [PIGET Curl Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand.pinfo) (Requires curl)
+  - [PIGET Bitsadmin Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-bitsadmin.pinfo) (Requires bitsadmin)
+  - [PIGET Powershell Installation](https://raw.githubusercontent.com/mnd0929/api-apps/main/piget-updatecommand-powershell.pinfo) (Requires powershell)
+
+- **Installation method via project assembly:**
+
+1. Install Winget (Requires CMD as administrator):
+   
+    ```batch
+    powershell Install-Script winget-install -Force
+    ```
+2. Install PIGET (Installing dependencies, building and then installing):
+   
+    ```batch
+    winget install Git.Git Microsoft.NuGet Microsoft.DotNet.Framework.DeveloperPack_4 -v 4.8
+    git clone https://github.com/mnd0929/piget piget && cd piget
+    nuget restore piget.sln
+    dotnet build piget.sln --configuration Release
+    .\piget\bin\Release\piget.exe install
+    ```
 
 <!> Supported platforms: ```win-x86```, ```win-x64```
 
