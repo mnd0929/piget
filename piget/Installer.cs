@@ -50,6 +50,7 @@ namespace piget
                             ProcessStartInfo processInfo = new ProcessStartInfo();
                             processInfo.Verb = "runas";
                             processInfo.FileName = Assembly.GetExecutingAssembly().Location;
+                            processInfo.Arguments = "install";
                             try
                             {
                                 Process.Start(processInfo);
