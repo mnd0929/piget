@@ -17,11 +17,26 @@ Quick Installation Script Manager (QISL). Uses the PIGET scripts library.
 
 - **Installation method via project assembly:**
 
-1. Install Winget (Requires CMD as administrator):
-   
-    ```batch
-    powershell Install-Script winget-install -Force
-    ```
+1. Install Winget (Requires powershell as administrator):
+
+    - First way:
+      ```powershell
+      Install-Script winget-install -Force
+      
+      ```
+
+    - Second way:
+      ```powershell
+      $API_URL = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+      $DOWNLOAD_URL = $(Invoke-RestMethod $API_URL).assets.browser_download_url |
+          Where-Object {$_.EndsWith(".msixbundle")}
+      Invoke-WebRequest -URI $DOWNLOAD_URL -OutFile winget.msixbundle -UseBasicParsing
+      Add-AppxPackage winget.msixbundle
+      Remove-Item winget.msixbundle
+      
+      ```
+      
+    
 2. Install PIGET (Installing dependencies, building and then installing):
    
     ```batch
@@ -30,6 +45,7 @@ Quick Installation Script Manager (QISL). Uses the PIGET scripts library.
     nuget restore piget.sln
     dotnet build piget.sln --configuration Release
     .\piget\bin\Release\piget.exe install
+    
     ```
 
 <!> Supported platforms: ```win-x86```, ```win-x64```
