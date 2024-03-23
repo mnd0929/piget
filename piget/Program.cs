@@ -1,26 +1,13 @@
 ﻿using piget.Api;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace piget
 {
     internal class Program
     {
-        public const string Logo = "\r\n ______     _____ _____ _____ ______ _______ \r\n \\ \\ \\ \\   |  __ \\_   _/ ____|  ____|__   __|\r\n  \\ \\ \\ \\  | |__) || || |  __| |__     | |   \r\n   > > > > |  ___/ | || | |_ |  __|    | |   \r\n  / / / /  | |    _| || |__| | |____   | |   \r\n /_/_/_/   |_|   |_____\\_____|______|  |_|  \r\n";
-
-        public const string Version = "1.2_m";
-
         public static LocalLibrariesManager localLibrariesManager = new LocalLibrariesManager();
 
         public static string[] publicArgs = { };
@@ -64,7 +51,6 @@ namespace piget
                             {
                                 localLibrariesManager.Add(args[2]);
                             }
-                            ActionAnswer.Log("<!> ", "Операция завершена без ошибок");
                             break;
 
                         case "disconnect":
@@ -72,7 +58,13 @@ namespace piget
                             {
                                 localLibrariesManager.Remove(localLibrariesManager.GetLibraryByName(args[2]));
                             }
-                            ActionAnswer.Log("<!> ", "Операция завершена без ошибок");
+                            break;
+
+                        case "reconnect":
+                            ActionAnswer.Log("<!> ", "Передача команды API");
+                            {
+                                localLibrariesManager.Reconnect(localLibrariesManager.GetLibraryByName(args[2]));
+                            }
                             break;
 
                         case "list":
@@ -105,7 +97,13 @@ namespace piget
                             {
                                 localLibrariesManager.RemoveAll();
                             }
-                            ActionAnswer.Log("<!> ", "Операция завершена без ошибок");
+                            break;
+
+                        case "reconnect":
+                            ActionAnswer.Log("<!> ", "Передача команды API с высоким приоритетом");
+                            {
+                                localLibrariesManager.ReconnectAll();
+                            }
                             break;
 
                         case "list":
@@ -131,6 +129,15 @@ namespace piget
                                 localLibrariesManager.UpdateAll();
                             }
                             ActionAnswer.Log("<!> ", "Библиотеки обновлены");
+                            break;
+                    }
+                    break;
+
+                case "utilities":
+                    switch (args[1])
+                    {
+                        case "download":
+                            Helpers.DownloadWithProgress(args[2], args[3]);
                             break;
                     }
                     break;
@@ -209,7 +216,7 @@ namespace piget
 
                 case "ver":
                     {
-                        ActionAnswer.Log("<?> ", $"Версия PIGET: {Version}");
+                        ActionAnswer.Log("<?> ", $"Версия PIGET: {Meta.Version}");
                     }
                     break;
 
@@ -225,8 +232,8 @@ namespace piget
 
             $"    Имя:        {pigetScript.Name}\r\n" +
             $"    Описание:   {pigetScript.Description}\r\n" +
-            $"    Хэш:        {HashManager.GetScriptHash(pigetScript)}\r\n" +
             $"    Библиотека: {pigetScript.ScriptLibrary.Name}\r\n" +
+            $"    Хэш:        {HashManager.GetScriptHash(pigetScript)}\r\n" +
             $"    Код:        {pigetScript.InitialScript}";
 
         public static string GetHelpPage() =>
@@ -234,8 +241,9 @@ namespace piget
             "piget \r\n" +
             "    run <ScriptName>\r\n" +
             "    search \"<Keywords>\"\r\n" +
-            "    library [connect <ManifestLink> | disconnect <LibraryName> | list <LibraryName> | update <LibraryName>]\r\n" +
-            "    libraries [disconnect | list | update]\r\n" +
+            "    library [connect <ManifestLink> | disconnect <LibraryName> | reconnect <LibraryName> | list <LibraryName> | update <LibraryName>]\r\n" +
+            "    libraries [disconnect | reconnect | list | update]\r\n" +
+            "    utilites [download <RemoteLink> <LocalPath>]\r\n" +
             "    check [resources | ...]\r\n" +
             "    info <ScriptName>\r\n" +
             "    update\r\n" +

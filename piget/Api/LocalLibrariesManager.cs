@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace piget.Api
@@ -20,9 +21,20 @@ namespace piget.Api
             Directory.CreateDirectory(LibrariesDirectory);
         }
 
+        /// <summary>
+        /// Корневая директория PIGET
+        /// </summary>
         public string PigetDirectory { get; private set; }
+
+        /// <summary>
+        /// Директория LocalLibrariesManager
+        /// </summary>
         public string LibrariesDirectory { get; private set; }
 
+        /// <summary>
+        /// Подключает библиотеку
+        /// </summary>
+        /// <param name="url">Ссылка на манифест библиотеки</param>
         public void Add(string url)
         {
             ActionAnswer.Log("<!> ", "Инициализация");
@@ -40,6 +52,9 @@ namespace piget.Api
             ActionAnswer.Log("<!> ", $"Добавлена библиотека «{newLibrary.Name}»");
         }
 
+        /// <summary>
+        /// Отключает библиотеку
+        /// </summary>
         public void Remove(PigetScriptLibrary library) 
         {
             ActionAnswer.Log("<!> ", $"Отключение библиотеки и ее источников: {library.Name}");
@@ -49,36 +64,99 @@ namespace piget.Api
             ActionAnswer.Log("<!> ", $"Библиотека {library.Name} отключена");
         }
 
+        /// <summary>
+        /// Переподключает библиотеку
+        /// </summary>
+        public void Reconnect(PigetScriptLibrary library)
+        {
+            ActionAnswer.Log("<!> ", $"Переподключение «{library.Name}»");
+
+            Remove(library);
+            Add(library.Url);
+        }
+
+        /// <summary>
+        /// Обновляет ВСЕ библиотеки
+        /// </summary>
         public void UpdateAll()
         {
             foreach (PigetScriptLibrary lib in GetLibraries())
             {
-                ActionAnswer.Log("<!> ", $"Обновление «{lib.Name}»");
+                try
+                {
+                    ActionAnswer.Log("<!> ", $"Обновление «{lib.Name}»");
 
-                lib.Update();
+                    lib.Update();
+                }
+                catch (Exception ex)
+                {
+                    Helpers.LogError($"Не удалось обновить библиотеку «{lib.Name}»", ex);
+                }
             }
         }
 
+        /// <summary>
+        /// Переподключает ВСЕ библиотеки
+        /// </summary>
+        public void ReconnectAll()
+        {
+            foreach (PigetScriptLibrary lib in GetLibraries())
+            {
+                try
+                {
+                    Reconnect(lib);
+                }
+                catch (Exception ex)
+                {
+                    Helpers.LogError($"Не удалось переподключить библиотеку «{lib.Name}»", ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Отключает ВСЕ библиотеки
+        /// </summary>
         public void RemoveAll()
         {
             foreach (PigetScriptLibrary lib in GetLibraries())
             {
-                Remove(lib);
+                try
+                {
+                    Remove(lib);
+                }
+                catch (Exception ex)
+                {
+                    Helpers.LogError($"Не удалось отключить библиотеку «{lib.Name}»", ex);
+                }
             }
         }
 
+        /// <summary>
+        /// Возвращает все подключенные библиотеки
+        /// </summary>
+        /// <returns></returns>
         public List<PigetScriptLibrary> GetLibraries() 
         {
             List<PigetScriptLibrary> libraries = new List<PigetScriptLibrary>();
 
             new DirectoryInfo(LibrariesDirectory).GetDirectories().ToList().ForEach(libraryDirectory => 
             {
-                libraries.Add(JsonSerializer.Deserialize<PigetScriptLibrary>(File.ReadAllText(Path.Combine(libraryDirectory.FullName, PigetScriptLibrary.ManifestFileName))));
+                try
+                {
+                    libraries.Add(JsonSerializer.Deserialize<PigetScriptLibrary>(File.ReadAllText(Path.Combine(libraryDirectory.FullName, PigetScriptLibrary.ManifestFileName))));
+                }
+                catch (Exception ex)
+                {
+                    Helpers.LogError($"Не удалось считать библиотеку {libraryDirectory}", ex);
+                }
             });
 
             return libraries;
         }
 
+        /// <summary>
+        /// Возвращает библиотеку по ее имени
+        /// </summary>
         public PigetScriptLibrary GetLibraryByName(string name)
         {
             foreach (var libraryDirectory in new DirectoryInfo(LibrariesDirectory).GetDirectories())
@@ -93,6 +171,10 @@ namespace piget.Api
             return null;
         }
 
+        /// <summary>
+        /// Возвращает ВСЕ скрипты из ВСЕХ библиотек
+        /// </summary>
+        /// <returns></returns>
         public List<PigetScript> GetScripts() 
         {
             List<PigetScript> scripts = new List<PigetScript>();
@@ -101,6 +183,10 @@ namespace piget.Api
 
             return scripts;
         }
+
+        /// <summary>
+        /// Возвращает скрипт по его имени
+        /// </summary>
         public PigetScript GetScriptByName(string name)
         {
             foreach (PigetScriptLibrary lib in GetLibraries())

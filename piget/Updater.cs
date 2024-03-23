@@ -20,7 +20,7 @@ namespace piget
         public static KeyValuePair<bool, string> CheckUpdates()
         {
             string latestVersion = new HttpClient().GetStringAsync(PigetLatestVersionCodeUrl).Result;
-            string currentVersion = Program.Version;
+            string currentVersion = Meta.Version;
 
             return new KeyValuePair<bool, string>(latestVersion == currentVersion, latestVersion);
         }

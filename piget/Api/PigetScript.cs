@@ -41,12 +41,13 @@ namespace piget.Api
         /// </summary>
         public void Run(string[] args)
         {
-            ActionAnswer.Log("<LOG> ", Helpers.ConvertStringArrayToString(args));
-
             string scriptHash = HashManager.GetScriptHash(this);
             string scriptRootDirectory = Path.Combine(ScriptLibrary.LibraryDirectory, scriptHash);
             string scriptEnvironement = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptEnvironementName);
             string scriptBatchPath = Path.Combine(scriptEnvironement, PigetScriptLibrary.ScriptFileName);
+
+            if (!ScriptLibrary.Url.Contains(Updater.PigetLibraryStd))
+                Helpers.UnknownPublisherNotify();
 
             DownloadResources(scriptEnvironement, scriptRootDirectory);
 
@@ -57,6 +58,9 @@ namespace piget.Api
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = false;
             process.Start();
+
+            Helpers.ProcessStartNotify(process.Id);
+
             process.WaitForExit();
         }
 
@@ -67,15 +71,17 @@ namespace piget.Api
         {
             string resourcesArchivePath = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptResourcesName);
 
-            if (string.IsNullOrEmpty(Resources))
-                return;
+            Helpers.ResourceAuthenticationDisabledNotify();
 
-            if (File.Exists(resourcesArchivePath))
+            if (string.IsNullOrEmpty(Resources) || File.Exists(resourcesArchivePath))
+            {
+                Helpers.ResourcesAlreadyLoadedNotify();
                 return;
+            }
 
             Helpers.DownloadWithProgress(Resources, resourcesArchivePath);
-
-            ZipFile.ExtractToDirectory(resourcesArchivePath, scriptEnvironement);
+            Helpers.ExtractToDirectory(resourcesArchivePath, scriptEnvironement);
+            Helpers.SavePackageNotify(scriptEnvironement);
         }
 
         /// <summary>

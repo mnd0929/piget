@@ -96,7 +96,7 @@ namespace piget
             }
 
             Console.Clear();
-            ColorConsole.WriteLine($"\r\n   {InstallWord} PIGET{(InstallWord == "Обновление" ? " до версии" : "")} {Program.Version}\r\n", ConsoleColor.Gray);
+            ColorConsole.WriteLine($"\r\n   {InstallWord} PIGET{(InstallWord == "Обновление" ? " до версии" : "")} {Meta.Version}\r\n", ConsoleColor.Gray);
             switch (new ConsoleMenu
             {
 
@@ -120,7 +120,7 @@ namespace piget
 
             Console.Clear();
 
-            Console.WriteLine(Program.Logo);
+            Console.WriteLine(Meta.Logo);
 
             ActionAnswer.Log("Создание окружения -> ", "Копирование исполняемого файла");
             File.Copy(Assembly.GetExecutingAssembly().Location, Path.Combine(directory, "piget.exe"), true);
