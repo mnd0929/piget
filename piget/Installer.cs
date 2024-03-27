@@ -121,21 +121,15 @@ namespace piget
             Console.Clear();
 
             Console.WriteLine(Meta.Logo);
-
-            ActionAnswer.Log("Создание окружения -> ", "Копирование исполняемого файла");
+            Helpers.Logs.Log("Создание окружения -> ", "Копирование исполняемого файла");
             File.Copy(Assembly.GetExecutingAssembly().Location, Path.Combine(directory, "piget.exe"), true);
-
-            ActionAnswer.Log("Создание окружения -> ", "Создание переменных сред");
+            Helpers.Logs.Log("Создание окружения -> ", "Создание переменных сред");
             Reg(directory);
-
-            ActionAnswer.Log("Стандартная настройка -> ", "Создание конфигураци");
-            // TODO: Создание файла настроек
-
-            ActionAnswer.Log("Стандартная настройка -> ", "Подключение к стандартной библиотеке PIGET");
+            Helpers.Logs.Log("Стандартная настройка -> ", "Создание конфигураци");
+            Helpers.Logs.Log("Стандартная настройка -> ", "Подключение к стандартной библиотеке PIGET");
             localLibrariesManager.Add(Updater.PigetLibraryStd);
             localLibrariesManager.CheckAllResources();
-
-            ActionAnswer.Log("Завершение -> ", "Очистка временных файлов");
+            Helpers.Logs.Log("Завершение -> ", "Очистка временных файлов");
             // TODO: Очистка кэша
 
             Thread.Sleep(1000);

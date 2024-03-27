@@ -47,19 +47,19 @@ namespace piget.Api
             string scriptBatchPath = Path.Combine(scriptEnvironement, PigetScriptLibrary.ScriptFileName);
 
             if (!ScriptLibrary.Url.Contains(Updater.PigetLibraryStd))
-                Helpers.UnknownPublisherNotify();
+                Helpers.Notify.UnknownPublisherNotify();
 
             DownloadResources(scriptEnvironement, scriptRootDirectory);
 
             Process process = new Process();
-            process.StartInfo.Arguments = $" {Helpers.ConvertStringArrayToString(args)}";
+            process.StartInfo.Arguments = $" {Helpers.Convert.ConvertStringArrayToString(args)}";
             process.StartInfo.FileName = scriptBatchPath;
             process.StartInfo.WorkingDirectory = scriptEnvironement;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = false;
             process.Start();
 
-            Helpers.ProcessStartNotify(process.Id);
+            Helpers.Notify.ProcessStartNotify(process.Id);
 
             process.WaitForExit();
         }
@@ -71,17 +71,17 @@ namespace piget.Api
         {
             string resourcesArchivePath = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptResourcesName);
 
-            Helpers.ResourceAuthenticationDisabledNotify();
+            Helpers.Notify.ResourceAuthenticationDisabledNotify();
 
             if (string.IsNullOrEmpty(Resources) || File.Exists(resourcesArchivePath))
             {
-                Helpers.ResourcesAlreadyLoadedNotify();
+                Helpers.Notify.ResourcesAlreadyLoadedNotify();
                 return;
             }
 
-            Helpers.DownloadWithProgress(Resources, resourcesArchivePath);
-            Helpers.ExtractToDirectory(resourcesArchivePath, scriptEnvironement);
-            Helpers.SavePackageNotify(scriptEnvironement);
+            Helpers.Network.DownloadWithProgress(Resources, resourcesArchivePath);
+            Helpers.FileSystem.ExtractToDirectory(resourcesArchivePath, scriptEnvironement);
+            Helpers.Notify.SavePackageNotify(scriptEnvironement);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace piget.Api
         /// </summary>
         public bool CheckResources() =>
             Resources == null ||
-            Helpers.RemoteFileExists(Resources);
+            Helpers.Network.RemoteFileExists(Resources);
 
         public void Remove()
         {

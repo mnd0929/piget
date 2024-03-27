@@ -77,7 +77,7 @@ namespace piget.Api
         /// </summary>
         public void Update()
         {
-            ActionAnswer.Log("<!> ", $"{Name} -> Обновление манифеста");
+            Helpers.Logs.Log("<!> ", $"{Name} -> Обновление манифеста");
 
             //
             // Обновление манифеста библиотеки
@@ -87,7 +87,7 @@ namespace piget.Api
             (ScriptListAddresses, Name, Description) = 
                 (pigetScriptLibrary.ScriptListAddresses, pigetScriptLibrary.Name, pigetScriptLibrary.Description);
 
-            Helpers.CreateFileWithText(Path.Combine(LibraryDirectory, ManifestFileName), JsonSerializer.Serialize(this));
+            Helpers.FileSystem.CreateFileWithText(Path.Combine(LibraryDirectory, ManifestFileName), JsonSerializer.Serialize(this));
 
             //
             // Обновление источников библиотеки
@@ -110,7 +110,7 @@ namespace piget.Api
                     {
                         if (HashManager.GetScriptHash(scriptManifestPath) == scriptHash)
                         {
-                            ActionAnswer.Log("<!> ", $"{Name} -> Обновление источников -> Скрипт {script.Name} не нуждается в обновлении");
+                            Helpers.Logs.Log("<!> ", $"{Name} -> Обновление источников -> Скрипт {script.Name} не нуждается в обновлении");
                             return;
                         }
                         else
@@ -122,10 +122,9 @@ namespace piget.Api
                     Directory.CreateDirectory(scriptDirectory);
                     Directory.CreateDirectory(scriptEnvironementDirectory);
 
-                    Helpers.CreateFileWithText(scriptManifestPath, JsonSerializer.Serialize(script));
-                    Helpers.CreateFileWithText(scriptBatExecutablePath, script.InitialScript);
-
-                    ActionAnswer.Log("<!> ", $"{Name} -> Обновление источников -> Скрипт {script.Name} обновлен");
+                    Helpers.FileSystem.CreateFileWithText(scriptManifestPath, JsonSerializer.Serialize(script));
+                    Helpers.FileSystem.CreateFileWithText(scriptBatExecutablePath, script.InitialScript);
+                    Helpers.Logs.Log("<!> ", $"{Name} -> Обновление источников -> Скрипт {script.Name} обновлен");
                 });
             });
         }

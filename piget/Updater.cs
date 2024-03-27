@@ -28,7 +28,7 @@ namespace piget
         {
             string updateCommand = new HttpClient().GetStringAsync(PigetLatestVersionUpdateCode).Result;
 
-            Helpers.CreateFileWithText("updater.bat", updateCommand);
+            Helpers.FileSystem.CreateFileWithText("updater.bat", updateCommand);
 
             Process process = new Process
             {

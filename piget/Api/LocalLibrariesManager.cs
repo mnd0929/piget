@@ -37,19 +37,17 @@ namespace piget.Api
         /// <param name="url">Ссылка на манифест библиотеки</param>
         public void Add(string url)
         {
-            ActionAnswer.Log("<!> ", "Инициализация");
+            Helpers.Logs.Log("<!> ", "Инициализация");
             
             string libraryHash = HashManager.GetScriptLibraryHash(url);
             string libraryPath = Path.Combine(LibrariesDirectory, libraryHash);
 
             Directory.CreateDirectory(libraryPath);
-
-            ActionAnswer.Log("<!> ", "Получение данных");
+            Helpers.Logs.Log("<!> ", "Получение данных");
 
             PigetScriptLibrary newLibrary = new PigetScriptLibrary(url, libraryPath);
             newLibrary.Update();
-
-            ActionAnswer.Log("<!> ", $"Добавлена библиотека «{newLibrary.Name}»");
+            Helpers.Logs.Log("<!> ", $"Добавлена библиотека «{newLibrary.Name}»");
         }
 
         /// <summary>
@@ -57,11 +55,10 @@ namespace piget.Api
         /// </summary>
         public void Remove(PigetScriptLibrary library) 
         {
-            ActionAnswer.Log("<!> ", $"Отключение библиотеки и ее источников: {library.Name}");
+            Helpers.Logs.Log("<!> ", $"Отключение библиотеки и ее источников: {library.Name}");
 
             Directory.Delete(library.LibraryDirectory, true);
-
-            ActionAnswer.Log("<!> ", $"Библиотека {library.Name} отключена");
+            Helpers.Logs.Log("<!> ", $"Библиотека {library.Name} отключена");
         }
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace piget.Api
         /// </summary>
         public void Reconnect(PigetScriptLibrary library)
         {
-            ActionAnswer.Log("<!> ", $"Переподключение «{library.Name}»");
+            Helpers.Logs.Log("<!> ", $"Переподключение «{library.Name}»");
 
             Remove(library);
             Add(library.Url);
@@ -84,13 +81,13 @@ namespace piget.Api
             {
                 try
                 {
-                    ActionAnswer.Log("<!> ", $"Обновление «{lib.Name}»");
+                    Helpers.Logs.Log("<!> ", $"Обновление «{lib.Name}»");
 
                     lib.Update();
                 }
                 catch (Exception ex)
                 {
-                    Helpers.LogError($"Не удалось обновить библиотеку «{lib.Name}»", ex);
+                    Helpers.Logs.LogError($"Не удалось обновить библиотеку «{lib.Name}»", ex);
                 }
             }
         }
@@ -108,7 +105,7 @@ namespace piget.Api
                 }
                 catch (Exception ex)
                 {
-                    Helpers.LogError($"Не удалось переподключить библиотеку «{lib.Name}»", ex);
+                    Helpers.Logs.LogError($"Не удалось переподключить библиотеку «{lib.Name}»", ex);
                 }
             }
         }
@@ -126,7 +123,7 @@ namespace piget.Api
                 }
                 catch (Exception ex)
                 {
-                    Helpers.LogError($"Не удалось отключить библиотеку «{lib.Name}»", ex);
+                    Helpers.Logs.LogError($"Не удалось отключить библиотеку «{lib.Name}»", ex);
                 }
             }
         }
@@ -147,7 +144,7 @@ namespace piget.Api
                 }
                 catch (Exception ex)
                 {
-                    Helpers.LogError($"Не удалось считать библиотеку {libraryDirectory}", ex);
+                    Helpers.Logs.LogError($"Не удалось считать библиотеку {libraryDirectory}", ex);
                 }
             });
 
@@ -217,7 +214,7 @@ namespace piget.Api
 
             GetScripts().ForEach(script =>
             {
-                ActionAnswer.WriteColorLine(new Dictionary<string, ConsoleColor> {
+                Helpers.Logs.LogCustom(new Dictionary<string, ConsoleColor> {
                     { $"<!> ", ConsoleColor.Yellow } ,
                     { $"Проверка доступности ресурса для {script.Name} из {script.ScriptLibrary.Name}: ", Console.ForegroundColor }
                 });
@@ -234,13 +231,13 @@ namespace piget.Api
             {
                 badScripts.ForEach(badScript => 
                 {
-                    ActionAnswer.Log("<!> ", $"Удаление {badScript.Name} из {badScript.ScriptLibrary.Name}");
+                    Helpers.Logs.Log("<!> ", $"Удаление {badScript.Name} из {badScript.ScriptLibrary.Name}");
                     badScript.Remove();
                 });
             }
             else
             {
-                ActionAnswer.Log("<!> ", $"Удаление скриптов с недоступными ресурсами отменено");
+                Helpers.Logs.Log("<!> ", $"Удаление скриптов с недоступными ресурсами отменено");
             }
             
             return badScripts;

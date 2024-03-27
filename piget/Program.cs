@@ -47,21 +47,21 @@ namespace piget
                     switch (args[1])
                     {
                         case "connect":
-                            ActionAnswer.Log("<!> ", "Передача команды API");
+                            Helpers.Logs.Log("<!> ", "Передача команды API");
                             {
                                 localLibrariesManager.Add(args[2]);
                             }
                             break;
 
                         case "disconnect":
-                            ActionAnswer.Log("<!> ", "Передача команды API");
+                            Helpers.Logs.Log("<!> ", "Передача команды API");
                             {
                                 localLibrariesManager.Remove(localLibrariesManager.GetLibraryByName(args[2]));
                             }
                             break;
 
                         case "reconnect":
-                            ActionAnswer.Log("<!> ", "Передача команды API");
+                            Helpers.Logs.Log("<!> ", "Передача команды API");
                             {
                                 localLibrariesManager.Reconnect(localLibrariesManager.GetLibraryByName(args[2]));
                             }
@@ -80,11 +80,11 @@ namespace piget
                             break;
 
                         case "update":
-                            ActionAnswer.Log("<!> ", "Получение компонентов");
+                            Helpers.Logs.Log("<!> ", "Получение компонентов");
                             {
                                 localLibrariesManager.GetLibraryByName(args[2]).Update();
                             }
-                            ActionAnswer.Log("<!> ", "Библиотеки обновлены");
+                            Helpers.Logs.Log("<!> ", "Библиотеки обновлены");
                             break;
                     }
                     break;
@@ -93,14 +93,14 @@ namespace piget
                     switch (args[1])
                     {
                         case "disconnect":
-                            ActionAnswer.Log("<!> ", "Передача команды API с высоким приоритетом");
+                            Helpers.Logs.Log("<!> ", "Передача команды API с высоким приоритетом");
                             {
                                 localLibrariesManager.RemoveAll();
                             }
                             break;
 
                         case "reconnect":
-                            ActionAnswer.Log("<!> ", "Передача команды API с высоким приоритетом");
+                            Helpers.Logs.Log("<!> ", "Передача команды API с высоким приоритетом");
                             {
                                 localLibrariesManager.ReconnectAll();
                             }
@@ -117,18 +117,20 @@ namespace piget
                                         $"{i + 1} ---\r\n" +
                                         $"    Имя: {pigetScriptLibrary.Name}\r\n" +
                                         $"    Описание: {pigetScriptLibrary.Description}\r\n" +
+                                        $"    Адрес: {pigetScriptLibrary.Url}\r\n" +
+                                        $"    Источники: {ListToString(pigetScriptLibrary.ScriptListAddresses)}\r\n" +
                                         $"    Хэш: {HashManager.GetScriptLibraryHash(pigetScriptLibrary)}\r\n" +
-                                        $"    Колличество пакетов: {pigetScriptLibrary.GetScripts().Count}");
+                                        $"    Кол-во пакетов: {pigetScriptLibrary.GetScripts().Count}");
                                 }
                             }
                             break;
 
                         case "update":
-                            ActionAnswer.Log("<!> ", "Запуск операции обновления библиотек и их источников");
+                            Helpers.Logs.Log("<!> ", "Запуск операции обновления библиотек и их источников");
                             {
                                 localLibrariesManager.UpdateAll();
                             }
-                            ActionAnswer.Log("<!> ", "Библиотеки обновлены");
+                            Helpers.Logs.Log("<!> ", "Библиотеки обновлены");
                             break;
                     }
                     break;
@@ -137,7 +139,7 @@ namespace piget
                     switch (args[1])
                     {
                         case "download":
-                            Helpers.DownloadWithProgress(args[2], args[3]);
+                            Helpers.Network.DownloadWithProgress(args[2], args[3]);
                             break;
                     }
                     break;
@@ -147,47 +149,47 @@ namespace piget
                     {
                         case "resources":
                             {
-                                ActionAnswer.Log("<!> ", "Запуск операции проверки ресурсов");
+                                Helpers.Logs.Log("<!> ", "Запуск операции проверки ресурсов");
                                 {
                                     localLibrariesManager.CheckAllResources();
                                 }
-                                ActionAnswer.Log("<!> ", "Операция завершена");
+                                Helpers.Logs.Log("<!> ", "Операция завершена");
                             }
                             break;
                     }
                     break;
 
                 case "update":
-                    ActionAnswer.Log("<!> ", "Поиск обновлений");
+                    Helpers.Logs.Log("<!> ", "Поиск обновлений");
                     {
                         KeyValuePair<bool, string> res = Updater.CheckUpdates();
                         if (res.Key)
                         {
-                            ActionAnswer.Log("<!> ", "Установлена последняя версия");
+                            Helpers.Logs.Log("<!> ", "Установлена последняя версия");
                         }
                         else
                         {
-                            ActionAnswer.Log("<?> ", $"Найдена новая версия: {res.Value.Replace("\n", null)}");
-                            ActionAnswer.Log("<!> ", $"Запуск Updater с сохранением текущих параметров");
+                            Helpers.Logs.Log("<?> ", $"Найдена новая версия: {res.Value.Replace("\n", null)}");
+                            Helpers.Logs.Log("<!> ", $"Запуск Updater с сохранением текущих параметров");
                             Updater.Update();
                         }
                     }
-                    ActionAnswer.Log("<!> ", "Операция завершена");
+                    Helpers.Logs.Log("<!> ", "Операция завершена");
                     break;
 
                 case "search":
                     List<PigetScript> pigetScripts = localLibrariesManager.SearchScripts(args[1]);
                     if (pigetScripts != null)
                     {
-                        ActionAnswer.Log("<?> ", $"Результатов: {pigetScripts.Count}");
+                        Helpers.Logs.Log("<?> ", $"Результатов: {pigetScripts.Count}");
                         pigetScripts.ForEach(scr => 
                         {
-                            ActionAnswer.Log($"<{scr.ScriptLibrary.Name}> ", $"{scr.Name}");
+                            Helpers.Logs.Log($"<{scr.ScriptLibrary.Name}> ", $"{scr.Name}");
                         });
                     }
                     else
                     {
-                        ActionAnswer.Log("<?> ", "Пакеты не найдены");
+                        Helpers.Logs.Log("<?> ", "Пакеты не найдены");
                     }
                     break;
 
@@ -195,12 +197,12 @@ namespace piget
                     PigetScript sc = localLibrariesManager.GetScriptByName(args[1]);
                     if (sc != null)
                     {
-                        ActionAnswer.Log("<?> ", $"Библиотека пакета: {sc.ScriptLibrary.Name}, Хэш: {HashManager.GetScriptHash(sc)}");
-                        sc.Run(Helpers.TrimArrayStart(Helpers.TrimArrayStart(args)));
+                        Helpers.Logs.Log("<?> ", $"Библиотека пакета: {sc.ScriptLibrary.Name}, Хэш: {HashManager.GetScriptHash(sc)}");
+                        sc.Run(Helpers.Array.TrimArrayStart(Helpers.Array.TrimArrayStart(args)));
                     }
                     else
                     {
-                        ActionAnswer.Log("<?> ", "Пакеты не найдены");
+                        Helpers.Logs.Log("<?> ", "Пакеты не найдены");
                     }
                     break;
 
@@ -216,7 +218,13 @@ namespace piget
 
                 case "ver":
                     {
-                        ActionAnswer.Log("<?> ", $"Версия PIGET: {Meta.Version}");
+                        Helpers.Logs.Log("<?> ", $"Версия PIGET: {Meta.Version}");
+                    }
+                    break;
+
+                case "editor":
+                    {
+                        new ReposEditor.Editor().Initialize();
                     }
                     break;
 
@@ -228,15 +236,20 @@ namespace piget
             }
         }
 
-        public static string GetScrPage(PigetScript pigetScript) =>
+        public static string GetScrPage(PigetScript pigetScript)
+        {
+            return
 
             $"    Имя:        {pigetScript.Name}\r\n" +
             $"    Описание:   {pigetScript.Description}\r\n" +
             $"    Библиотека: {pigetScript.ScriptLibrary.Name}\r\n" +
             $"    Хэш:        {HashManager.GetScriptHash(pigetScript)}\r\n" +
             $"    Код:        {pigetScript.InitialScript}";
+        }
 
-        public static string GetHelpPage() =>
+        public static string GetHelpPage()
+        {
+            return
 
             "piget \r\n" +
             "    run <ScriptName>\r\n" +
@@ -249,5 +262,18 @@ namespace piget
             "    update\r\n" +
             "    ver\r\n" +
             "    help";
+        }
+
+        public static string ListToString(List<string> list)
+        {
+            string result = null;
+
+            foreach (string item in list)
+                result += $" -> {item}\r\n";
+
+            result.TrimEnd('\n');
+
+            return result;
+        }
     }
 }
