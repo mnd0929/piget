@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Konsole;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -104,16 +105,21 @@ namespace piget.Api
         {
             public static void WriteProgressLine(int percent, int segmentsCount, DownloadProgressChangedEventArgs e)
             {
-                int currentSegmentsCount = percent / (100 / segmentsCount);
-                int currentHideSegmentsCount = segmentsCount - currentSegmentsCount;
-
-                string progressBar =
-                    $"\r  {string.Concat(Enumerable.Repeat("█", currentSegmentsCount))}{string.Concat(Enumerable.Repeat("░", currentHideSegmentsCount))}";
-
                 string size = e == null ? null :
                     $"{Convert.SizeToStringFormat(e.BytesReceived)} / {Convert.SizeToStringFormat(e.TotalBytesToReceive)}";
 
-                Console.Write($"{progressBar} {size}        ");
+                Console.Write($"{BuildProgressLine(percent, segmentsCount)} {size}        ");
+            }
+
+            public static void WriteProgressLine(int percent, int segmentsCount) =>
+                Console.Write($"{BuildProgressLine(percent, segmentsCount)} {percent}%        ");
+
+            private static string BuildProgressLine(int percent, int segmentsCount)
+            {
+                int currentSegmentsCount = percent / (100 / segmentsCount);
+                int currentHideSegmentsCount = segmentsCount - currentSegmentsCount;
+
+                return $"\r  {string.Concat(Enumerable.Repeat("█", currentSegmentsCount))}{string.Concat(Enumerable.Repeat("░", currentHideSegmentsCount))}";
             }
 
             public static Int32 GetPercent(Int32 b, Int32 a)

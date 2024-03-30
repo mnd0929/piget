@@ -194,20 +194,34 @@ namespace piget
                     break;
 
                 case "run":
-                    PigetScript sc = localLibrariesManager.GetScriptByName(args[1]);
-                    if (sc != null)
+
+                    if (args[1].Contains(":"))
                     {
-                        Helpers.Logs.Log("<?> ", $"Библиотека пакета: {sc.ScriptLibrary.Name}, Хэш: {HashManager.GetScriptHash(sc)}");
-                        sc.Run(Helpers.Array.TrimArrayStart(Helpers.Array.TrimArrayStart(args)));
+                        string libName = args[1].Split(':')[0];
+                        string scrName = args[1].Split(':')[1];
+
+                        PigetScriptLibrary pigetScriptLibrary = localLibrariesManager.GetLibraryByName(libName);
+                        if (pigetScriptLibrary != null)
+                        {
+                            PigetScript sc = pigetScriptLibrary.GetScriptByName(scrName);
+                            ScRun(args, sc);
+                        }
+                        else
+                        {
+                            Helpers.Logs.Log("<?> ", $"Библиотека {libName} не найдена");
+                        }
                     }
                     else
                     {
-                        Helpers.Logs.Log("<?> ", "Пакеты не найдены");
+                        PigetScript sc = localLibrariesManager.GetScriptByName(args[1]);
+                        ScRun(args, sc);
                     }
                     break;
 
                 case "install":
-                    Installer.Run(localLibrariesManager.PigetDirectory, localLibrariesManager);
+                    {
+                        Installer.Run(localLibrariesManager.PigetDirectory, localLibrariesManager);
+                    }
                     break;
 
                 case "info":
@@ -233,6 +247,19 @@ namespace piget
                         Console.WriteLine(GetHelpPage());
                     }
                     break;
+            }
+        }
+
+        private static void ScRun(string[] args, PigetScript sc)
+        {
+            if (sc != null)
+            {
+                Helpers.Logs.Log("<?> ", $"Библиотека пакета: {sc.ScriptLibrary.Name}, Хэш: {HashManager.GetScriptHash(sc)}");
+                sc.Run(Helpers.Array.TrimArrayStart(Helpers.Array.TrimArrayStart(args)));
+            }
+            else
+            {
+                Helpers.Logs.Log("<?> ", "Пакеты не найдены");
             }
         }
 

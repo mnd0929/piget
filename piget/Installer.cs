@@ -1,20 +1,16 @@
 ﻿using piget.Api;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace piget
 {
-    public class Installer
+    public class Installer // TODO: code ref
     {
         public static void Run(string directory, LocalLibrariesManager localLibrariesManager)
         {
@@ -119,21 +115,35 @@ namespace piget
             }
 
             Console.Clear();
-
             Console.WriteLine(Meta.Logo);
+
+            //
+            // Копирование исполняемого файла
             Helpers.Logs.Log("Создание окружения -> ", "Копирование исполняемого файла");
             File.Copy(Assembly.GetExecutingAssembly().Location, Path.Combine(directory, "piget.exe"), true);
+
+            //
+            // Создание переменных сред
             Helpers.Logs.Log("Создание окружения -> ", "Создание переменных сред");
             Reg(directory);
+
+            //
+            // Создание конфигураци (TODO: Если будут настройки)
             Helpers.Logs.Log("Стандартная настройка -> ", "Создание конфигураци");
+
+            //
+            // Подключение к стандартной библиотеке PIGET
             Helpers.Logs.Log("Стандартная настройка -> ", "Подключение к стандартной библиотеке PIGET");
             localLibrariesManager.Add(Updater.PigetLibraryStd);
-            localLibrariesManager.CheckAllResources();
+
+            //
+            // Очистка временных файлов
             Helpers.Logs.Log("Завершение -> ", "Очистка временных файлов");
             // TODO: Очистка кэша
 
-            Thread.Sleep(1000);
 
+
+            Thread.Sleep(1000);
             ColorConsole.WriteLine($"\r\n ---> Установка завершена", ConsoleColor.Green);
         }
 
