@@ -213,8 +213,26 @@ namespace piget
                     }
                     else
                     {
-                        PigetScript sc = localLibrariesManager.GetScriptByName(args[1]);
-                        ScRun(args, sc);
+                        List<PigetScript> sc = localLibrariesManager.GetScriptsByName(args[1]);
+                        if (sc.Count > 1)
+                        {
+                            Helpers.Logs.Log("<?> ", $"Найдено несколько сценариев. Для уточнения расположения используйте <libName>:<scName>.");
+                            Helpers.Logs.Log("<?> ", $"После подтверждения будет запущен первый найденный сценарий.");
+
+                            Helpers.Logs.LogCustom(new Dictionary<string, ConsoleColor> { 
+                                { $"Запустить {sc[0].ScriptLibrary.Name}:{sc[0].Name}?", ConsoleColor.Yellow },
+                                { " [Y/n] ", Console.ForegroundColor }
+                            });
+
+                            string answer = Console.ReadLine();
+
+                            if (answer == "n" ||
+                                answer == "N" ||
+                                !string.IsNullOrWhiteSpace(answer) && answer != "Y" && answer != "y")
+
+                                return;
+                        }
+                        ScRun(args, sc[0]);
                     }
                     break;
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System;
+using ConsoleToolsCollection.ConsoleSelector;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
 namespace piget.ReposEditor
@@ -12,11 +13,39 @@ namespace piget.ReposEditor
     {
         private GitHubClient gitHubClient = null;
 
-        List<Repository> repositories = null;
+        /// <summary>
+        /// Репозитории содержащие библиотеки
+        /// </summary>
+        List<Repository> psRepositories = null;
 
+        /// <summary>
+        /// Выбранный репозиторий
+        /// </summary>
         Repository currentRepository = null;
 
-        RepositoryContent currentLibraryContent = null;
+        /// <summary>
+        /// Содержание выбранного репозитория (Библиотеки)
+        /// </summary>
+        IReadOnlyList<RepositoryContent> currentRepositoryContentLibraries = null;
+
+        /// <summary>
+        /// Содержание выбранного репозитория (Источники)
+        /// </summary>
+        IReadOnlyList<RepositoryContent> currentRepositoryContentSources = null;
+
+        ConsoleSelector menu = new ConsoleSelector
+        {
+            Indentations = new ConsoleSelectorIndentations
+            {
+                SelectionRight = 20,
+                SelectionLeft = 20,
+                Text = 3
+            },
+            Settings = new ConsoleSelectorSettings
+            {
+                MaxHeight = 20
+            }
+        };
 
         public void Initialize()
         {
@@ -26,7 +55,7 @@ namespace piget.ReposEditor
             Helpers.Logs.Log("\r\n<!> ", $"Инициализация аккаунта {gitHubClient.User.Current().Result.Login}");
             Helpers.Logs.Log("<!> ", $"Поиск библиотек в репозиториях");
 
-            SearchLibraryRepositories();
+            psRepositories = SearchLibraryRepositories();
 
             Console.Clear();
 
@@ -34,56 +63,34 @@ namespace piget.ReposEditor
             SelectLibrary();
         }
 
-        public void SelectRepository()
+        public Repository SelectRepository()
         {
-            ConsoleMenu menu = new ConsoleMenu
+            menu.Items.Add(new ConsoleSelectorItem("[+] Создать репозиторий", tag: "newrep"));
+
+            psRepositories.ForEach(rep => 
+                menu.Items.Add(new ConsoleSelectorItem(rep.Name + "/", tag: rep)));
+
+            ConsoleSelectorItem answer = menu.ShowSelector();
+            if (answer.Tag == "newrep" as object)
             {
-                HideMenuAfterSuccessfulSelection = true
-            };
-
-            repositories.ForEach(rep => 
-                menu.AnswerOptions.Add(rep.Name + string.Concat(Enumerable.Repeat(" ", Console.WindowWidth - rep.Name.Length - 1))));
-
-            menu.AnswerOptions.Add("[+] Создать репозиторий");
-
-            int answerIndex = menu.GetAnswer();
-            if (answerIndex == menu.AnswerOptions.Count - 1)
-            {
-                CreateLibrary();
-                return;
+                CreateRepository();
+                return SelectRepository();
             }
 
-            currentRepository = repositories[answerIndex];
+            return answer.Tag as Repository;
         }
 
         public void SelectLibrary()
         {
-            ConsoleMenu menu = new ConsoleMenu
-            {
-                HideMenuAfterSuccessfulSelection = true
-            };
-
-            repositories.ForEach(rep =>
-                menu.AnswerOptions.Add(rep.Name + string.Concat(Enumerable.Repeat(" ", Console.WindowWidth - rep.Name.Length - 1))));
-
-            menu.AnswerOptions.Add("[+] Создать репозиторий");
-
-            int answerIndex = menu.GetAnswer();
-            if (answerIndex == menu.AnswerOptions.Count - 1)
-            {
-                CreateLibrary();
-                return;
-            }
-
-            currentRepository = repositories[answerIndex];
+            
         }
 
-        public void CreateLibrary()
+        public void CreateRepository()
         {
             Helpers.Logs.Log("<!> ", $"TODO: Создание библиотеки");
         }
 
-        private void SearchLibraryRepositories()
+        private List<Repository> SearchLibraryRepositories()
         {
             List<Repository> pigetRemoteScriptLibrariesRepositories = new List<Repository>();
             IReadOnlyList<Repository> repositories = gitHubClient.Repository.GetAllForCurrent().Result;
@@ -108,7 +115,7 @@ namespace piget.ReposEditor
                 catch { }
             }
 
-            this.repositories = pigetRemoteScriptLibrariesRepositories;
+            return pigetRemoteScriptLibrariesRepositories;
         }
 
         private void SearchLibrariesInRepository()

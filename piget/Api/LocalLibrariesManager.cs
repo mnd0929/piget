@@ -198,6 +198,24 @@ namespace piget.Api
         }
 
         /// <summary>
+        /// Возвращает скрипты c указанным именем
+        /// </summary>
+        public List<PigetScript> GetScriptsByName(string name)
+        {
+            List<PigetScript> result = new List<PigetScript>();
+
+            foreach (PigetScriptLibrary lib in GetLibraries())
+            {
+                PigetScript pigetScript = lib.GetScriptByName(name);
+
+                if (pigetScript != null)
+                    result.Add(pigetScript);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Ищет скрипты по указанным ключевым словам
         /// </summary>
         public List<PigetScript> SearchScripts(string keywords) =>

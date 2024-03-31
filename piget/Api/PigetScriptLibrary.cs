@@ -128,6 +128,7 @@ namespace piget.Api
                 });
             });
         }
+
         public List<PigetScript> GetScripts()
         {
             List<PigetScript> pigetScripts = new List<PigetScript>();
@@ -139,6 +140,7 @@ namespace piget.Api
 
             return pigetScripts;
         }
+
         public PigetScript GetScriptByName(string name)
         {
             foreach (DirectoryInfo scriptDirectory in new DirectoryInfo(LibraryDirectory).GetDirectories())
