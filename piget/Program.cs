@@ -204,7 +204,14 @@ namespace piget
                         if (pigetScriptLibrary != null)
                         {
                             PigetScript sc = pigetScriptLibrary.GetScriptByName(scrName);
-                            ScRun(args, sc);
+                            if (sc == null)
+                            {
+                                Helpers.Logs.Log("<?> ", $"Скрипт {args[1]} не найден");
+                            }
+                            else
+                            {
+                                ScRun(args, sc);
+                            }
                         }
                         else
                         {
@@ -232,7 +239,15 @@ namespace piget
 
                                 return;
                         }
-                        ScRun(args, sc[0]);
+
+                        if (sc.Count > 0)
+                        {
+                            ScRun(args, sc[0]);
+                        } 
+                        else
+                        {
+                            Helpers.Logs.Log("<?> ", $"Ничего не найдено");
+                        }
                     }
                     break;
 
