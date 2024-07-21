@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using piget.Api;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Policy;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace piget.Api
+namespace QislEngine
 {
     public class PigetScriptLibrary
     {

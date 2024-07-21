@@ -1,5 +1,4 @@
-﻿using Konsole;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,8 +6,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 
 namespace piget.Api
@@ -25,11 +22,38 @@ namespace piget.Api
 
             public static void ExtractToDirectory(string archivePath, string outDir)
             {
+                Console.CursorVisible = false;
+
                 Logs.LogCustom(new Dictionary<string, ConsoleColor> {
                 { "Распаковка ", System.Console.ForegroundColor }, { archivePath + Environment.NewLine, ConsoleColor.Blue } });
 
-                ZipFile.ExtractToDirectory(archivePath, outDir);
+                using (var archive = new ZipArchive(File.OpenRead(archivePath)))
+                {
+                    int totalProgress = archive.Entries.Count;
+
+                    for (int i = 0; i < totalProgress; i++)
+                    {
+                        ZipArchiveEntry entry = archive.Entries[i];
+
+                        try
+                        {
+                            string destPath = Path.Combine(outDir, entry.FullName.Replace('/', '\\'));
+                            string destDir = Path.GetDirectoryName(destPath);
+
+                            Directory.CreateDirectory(destDir);
+
+                            entry.ExtractToFile(destPath, true);
+                        }
+                        catch { }
+
+                        ProgressIndicator.WriteDecompressingProgressLine(20, i + 1, totalProgress);
+                    }
+                }
+
+                Console.WriteLine(Environment.NewLine);
+                Console.CursorVisible = true;
             }
+
         }
         
         public static class Network
@@ -53,9 +77,9 @@ namespace piget.Api
                 WebClient webClient = new WebClient();
                 webClient.DownloadProgressChanged += (_s, _e) =>
                 {
-                    if (stopwatch.ElapsedMilliseconds > 200)
+                    if (stopwatch.ElapsedMilliseconds > 1000 || _e.ProgressPercentage == 100)
                     {
-                        ProgressIndicator.WriteProgressLine(_e.ProgressPercentage, 20, _e);
+                        ProgressIndicator.WriteDownloadingProgressLine(_e.ProgressPercentage, 20, _e);
 
                         stopwatch.Restart();
                     }
@@ -103,7 +127,14 @@ namespace piget.Api
         
         public static class ProgressIndicator
         {
-            public static void WriteProgressLine(int percent, int segmentsCount, DownloadProgressChangedEventArgs e)
+            public static void WriteDecompressingProgressLine(int segmentsCount, int currentCount, int targetCount)
+            {
+                int progress = GetPercent(targetCount, currentCount);
+
+                Console.Write($"{BuildProgressLine(progress, segmentsCount)} {progress}% ({currentCount} / {targetCount})\t");
+            }
+
+            public static void WriteDownloadingProgressLine(int percent, int segmentsCount, DownloadProgressChangedEventArgs e)
             {
                 string size = e == null ? null :
                     $"{Convert.SizeToStringFormat(e.BytesReceived)} / {Convert.SizeToStringFormat(e.TotalBytesToReceive)}";

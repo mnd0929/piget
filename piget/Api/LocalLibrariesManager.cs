@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QislEngine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -172,7 +173,7 @@ namespace piget.Api
         {
             List<PigetScript> scripts = new List<PigetScript>();
 
-            GetLibraries().ForEach(library => scripts.AddRange(library.GetScripts()));
+            GetLibraries().ForEach(library => scripts.AddRange((IEnumerable<PigetScript>)library.GetScripts()));
 
             return scripts;
         }

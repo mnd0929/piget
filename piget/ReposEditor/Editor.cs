@@ -35,14 +35,15 @@ namespace piget.ReposEditor
 
         ConsoleSelector menu = new ConsoleSelector
         {
-            Indentations = new ConsoleSelectorIndentations
-            {
-                SelectionRight = 20,
-                SelectionLeft = 20,
-                Text = 3
-            },
             Settings = new ConsoleSelectorSettings
             {
+                Indentations = new ConsoleSelectorIndentations
+                {
+                    SelectionRight = 20,
+                    SelectionLeft = 20,
+                    Text = 3
+                },
+
                 MaxHeight = 20
             }
         };
@@ -70,7 +71,7 @@ namespace piget.ReposEditor
             psRepositories.ForEach(rep => 
                 menu.Items.Add(new ConsoleSelectorItem(rep.Name + "/", tag: rep)));
 
-            ConsoleSelectorItem answer = menu.ShowSelector();
+            ConsoleSelectorItem answer = menu.Show();
             if (answer.Tag == "newrep" as object)
             {
                 CreateRepository();

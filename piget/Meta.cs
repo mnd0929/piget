@@ -16,6 +16,6 @@ namespace piget
             "\r\n  / / / /  | |    _| || |__| | |____   | |   " +
             "\r\n /_/_/_/   |_|   |_____\\_____|______|  |_|  \r\n";
 
-        public const string Version = "1.3";
+        public const string Version = "1.4";
     }
 }

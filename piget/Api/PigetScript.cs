@@ -1,11 +1,6 @@
-﻿using System;
+﻿using QislEngine;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Threading;
 
 namespace piget.Api
 {
@@ -49,7 +44,7 @@ namespace piget.Api
             if (!ScriptLibrary.Url.Contains(Updater.PigetLibraryStd))
                 Helpers.Notify.UnknownPublisherNotify();
 
-            DownloadResources(scriptEnvironement, scriptRootDirectory);
+            InitializeResources(scriptEnvironement, scriptRootDirectory);
 
             Process process = new Process();
             process.StartInfo.Arguments = $" {Helpers.Convert.ConvertStringArrayToString(args)}";
@@ -65,22 +60,22 @@ namespace piget.Api
         }
 
         /// <summary>
-        /// Скачивает ресурсы скрипта, если это необходимо
+        /// Инициализирует ресурсы скрипта, если это необходимо
         /// </summary>
-        public void DownloadResources(string scriptEnvironement, string scriptRootDirectory)
+        public void InitializeResources(string scriptEnvironement, string scriptRootDirectory)
         {
-            string resourcesArchivePath = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptResourcesName);
+            string resourcesTempPath = Path.Combine(scriptRootDirectory, PigetScriptLibrary.ScriptResourcesName);
 
             Helpers.Notify.ResourceAuthenticationDisabledNotify();
 
-            if (string.IsNullOrEmpty(Resources) || File.Exists(resourcesArchivePath))
+            if (string.IsNullOrEmpty(Resources) || File.Exists(resourcesTempPath))
             {
                 Helpers.Notify.ResourcesAlreadyLoadedNotify();
                 return;
             }
 
-            Helpers.Network.DownloadWithProgress(Resources, resourcesArchivePath);
-            Helpers.FileSystem.ExtractToDirectory(resourcesArchivePath, scriptEnvironement);
+            Helpers.Network.DownloadWithProgress(Resources, resourcesTempPath);
+            Helpers.FileSystem.ExtractToDirectory(resourcesTempPath, scriptEnvironement);
             Helpers.Notify.SavePackageNotify(scriptEnvironement);
         }
 
